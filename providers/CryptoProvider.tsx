@@ -56,10 +56,6 @@ export const CryptoProvider = ({
     if (accounts.length > 0) setAccount(accounts[0])
   }
 
-  const handleNetworkChanged = () => {
-
-  }
- 
   const isConnected = () => {
     if (account !== '') return true
     return false
