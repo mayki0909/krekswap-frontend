@@ -52,6 +52,14 @@ export const CryptoProvider = ({
   const [swapContract, setSwapContract] = useState<Swap>();
   const [provider, setProvider] = useState<JsonRpcProvider>(new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC));
 
+  const handleAccountsChanged = (accounts: string[]) => {
+    if (accounts.length > 0) setAccount(accounts[0])
+  }
+
+  const handleNetworkChanged = () => {
+
+  }
+ 
   const isConnected = () => {
     if (account !== '') return true
     return false
@@ -106,7 +114,7 @@ export const CryptoProvider = ({
     });
   }
 
-  
+
   const connectToSwapContract = async () => {
     const signer = await provider.getSigner()
     const contract: Swap = Swap_factory.connect(process.env.NEXT_PUBLIC_SWAP_CONTRACT!, signer)
@@ -175,6 +183,15 @@ export const CryptoProvider = ({
       connectToSwapContract()
     }
   },[isConnected()])
+
+  useEffect(() => {
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', handleAccountsChanged);
+
+      // TODO popup with button to switch back network
+      window.ethereum.on('chainChanged', (chainId: string) => window.location.reload());
+    }
+  }, [])
 
   return (
     <CryptoContext.Provider
